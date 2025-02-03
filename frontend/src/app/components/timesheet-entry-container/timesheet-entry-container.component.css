@@ -1,0 +1,33 @@
+.timesheet-entry-container {
+  margin: 2em;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.timesheet-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 0;
+  margin: 0 1em;
+}
+
+.timesheet-options mat-form-field {
+  margin: 0 1em;
+}
+
+.timesheet-actions button {
+  background-color: var(--roc-color);
+  border: 3px var(--roc-color) solid;
+  font-size: 1em;
+  color: white;
+  border-radius: 20px;
+  padding: 15px;
+  margin: 0 8px;
+  font-weight: bold;
+}
+
+.timesheet-actions .inverted-btn {
+  color: var(--roc-color);
+  background-color: white;
+}

@@ -1,0 +1,28 @@
+<div class="timesheet-entry-container">
+  <div class="timesheet-header">
+    <div class="timesheet-options">
+      <mat-form-field appearance="fill">
+        <mat-label>Project Name</mat-label>
+        <mat-select [(value)]="projectName">
+          <mat-option *ngFor="let option of options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Select Month</mat-label>
+        <mat-select [(value)]="selectedMonth">
+          <mat-option *ngFor="let option of options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="timesheet-actions">
+      <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">Export to PDF</button>
+      <button mat-button (click)="edit()">Edit</button>
+      <button mat-button (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

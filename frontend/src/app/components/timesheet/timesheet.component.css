@@ -1,0 +1,17 @@
+.timesheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 5em;
+  padding: 2em 2em;
+  border-radius: 15px;
+}
+
+.timesheet-header {
+  margin: auto;
+}
+
+.timesheet-header mat-card-title {
+  font-size: 2.3em;
+}

@@ -1,3 +1,7 @@
+:root {
+  --roc-color: #e0aa51;
+}
+
 * {
   margin: 0;
   padding: 0;
