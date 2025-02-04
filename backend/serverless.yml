@@ -1,4 +1,4 @@
-service: senior-project-template
+service: senior-project
 
 provider:
   name: aws
@@ -25,11 +25,10 @@ resources:
 functions:
   login:
     handler: src/handlers/login.handler
+    environment:
+      USERS_TABLE: users
     events:
       - http:
           path: login
           method: post
           cors: true
-
-  
-
