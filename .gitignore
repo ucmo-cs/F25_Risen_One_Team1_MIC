@@ -2,5 +2,4 @@ frontend/.angular
 node_modules
 .serverless
 .idea
-.vscode
 .DS_Store
