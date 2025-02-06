@@ -22,6 +22,18 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
+    ProjectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: projects
+        AttributeDefinitions:
+          - AttributeName: projectId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: projectId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
 functions:
   login:
     handler: src/handlers/login.handler
@@ -31,4 +43,20 @@ functions:
       - http:
           path: login
           method: post
+          cors: true
+        
+  getUsers:
+    handler: src/handlers/getUsers.handler
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true      
+
+  getProjects:
+    handler: src/handlers/getProjects.handler
+    events:
+      - http:
+          path: projects
+          method: get
           cors: true
