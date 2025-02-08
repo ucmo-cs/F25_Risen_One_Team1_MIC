@@ -22,7 +22,6 @@ Start the development server to preview the Angular application locally.
 - In the `frontend/` folder, run `npm run build` to update the static frontend files
 - In the root folder, run `sls deploy`
 - This will deploy the frontend to S3 and the backend lambda functions
-- Use `sls deploy --stage prod` to deploy production version
 
 # Info:
 
