@@ -1,7 +1,8 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
+
+const dynamoDb = new DynamoDBClient();
 
 module.exports.handler = async event => {
   const requestBody = JSON.parse(event.body);
@@ -9,14 +10,14 @@ module.exports.handler = async event => {
   const params = {
     TableName: process.env.USERS_TABLE,
     Key: {
-      username: requestBody.username
+      username: { S: requestBody.username }
     }
   };
 
   try {
-    const data = await dynamoDb.get(params).promise();
+    const data = await dynamoDb.send(new GetItemCommand(params));
 
-    if (!data.Item || data.Item.password !== requestBody.password) {
+    if (!data.Item || data.Item.password.S !== requestBody.password) {
       return {
         statusCode: 401,
         body: JSON.stringify({ message: 'Invalid username or password' })

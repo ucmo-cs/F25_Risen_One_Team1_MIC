@@ -1,9 +1,7 @@
 {
-  "devDependencies": {
-    "serverless-offline": "^13.8.0",
-    "serverless-s3-sync": "^3.3.0"
-  },
+  "name": "backend",
+  "version": "0.0.1",
   "dependencies": {
-    "aws-sdk": "^2.1692.0"
+    "@aws-sdk/client-dynamodb": "^3.744.0"
   }
 }

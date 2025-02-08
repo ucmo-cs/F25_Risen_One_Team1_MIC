@@ -1,0 +1,67 @@
+org: ucmorisenone
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: senior-project
+service: senior-project
+
+plugins:
+  - serverless-offline
+  - serverless-s3-sync
+
+stages:
+  default:
+    params:
+      tableName: 'users-table-${sls:stage}'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  iam:
+    role:
+      statements: # Allow lambda functions full access to DB
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [UsersTable, Arn]
+  environment:
+    USERS_TABLE: ${param:tableName}
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${param:tableName}
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+functions:
+  login:
+    handler: backend/src/handlers/login.handler
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+
+package:
+  exclude:
+    - '**'
+  include:
+    - backend/src/**
+    - frontend/dist/frontend/browser/**
+
+custom:
+  s3Sync:
+    - bucketName: risenonefrontend
+      localDir: frontend/dist/frontend/browser/
