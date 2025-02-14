@@ -1,37 +1,65 @@
 <div class="timesheet-entry-container">
+
   <div class="timesheet-header">
-    <div class="timesheet-options">
-      <mat-form-field>
-        <mat-label>Project Name</mat-label>
-        <mat-select [(value)]="selected.project.id">
-          <mat-option *ngFor="let project of projects" [value]="project.id">
-            {{ project.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="timesheet-options">
+        <mat-form-field>
+          <mat-label>Project Name</mat-label>
+          <mat-select [(value)]="selected.project.id">
+            <mat-option *ngFor="let project of projects" [value]="project.id">
+              {{ project.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Select Month</mat-label>
-        <mat-select [(value)]="selected.month">
-          <mat-option *ngFor="let month of months" [value]="month">
-            {{ month }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>Select Month</mat-label>
+          <mat-select [(value)]="selected.month" (selectionChange)="onMonthChange($event.value)">
+            <mat-option *ngFor="let month of months" [value]="month">
+              {{ month }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Select Year</mat-label>
-        <mat-select [(value)]="selected.year">
-          <mat-option [value]="2024">2024</mat-option>
-          <mat-option [value]="2025">2025</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+        <mat-form-field>
+          <mat-label>Select Year</mat-label>
+          <mat-select [(value)]="selected.year">
+            <mat-option [value]="2024">2024</mat-option>
+            <mat-option [value]="2025">2025</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-    <div class="timesheet-actions">
-      <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">Export to PDF</button>
-      <button mat-button (click)="edit()">Edit</button>
-      <button mat-button (click)="save()">Save</button>
-    </div>
+      <div class="timesheet-actions">
+        <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">Export to PDF</button>
+        <button mat-button (click)="edit()">Edit</button>
+        <button mat-button (click)="save()">Save</button>
+      </div>
+  </div>
+
+
+  <div class="timesheet-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th *ngFor="let day of daysInSelectedMonthColumns">{{ day }}</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of data">
+          <td>{{ row.employee.name }}</td>
+          <td *ngFor="let day of daysInSelectedMonthColumns">{{ row.entries[day] }}</td>
+          <td>{{ calculateEmployeeTotalColumn(row) }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <!-- so that the 'grand total' cell on the last row appear aligned on the right with the other totals -->
+          <td [colSpan]="daysInSelectedMonth+1"></td>
+          <td>{{ calculateGrandTotalColumn() }}</td>
+        </tr>
+      </tfoot>
+    </table>
   </div>
 </div>

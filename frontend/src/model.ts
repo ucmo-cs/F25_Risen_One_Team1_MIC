@@ -1,3 +1,7 @@
+export interface Employee {
+  name: string,
+}
+
 export interface Project {
   name: string,
   id: number,
@@ -12,6 +16,11 @@ export interface Selected {
 export interface Signature {
   name: string,
   date: string,
+}
+
+export interface EmployeeTimesheet {
+  employee: Employee,
+  entries: Array<number>,
 }
 
 export type Month =

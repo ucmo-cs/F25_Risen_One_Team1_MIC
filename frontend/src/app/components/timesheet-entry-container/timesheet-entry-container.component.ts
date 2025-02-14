@@ -1,8 +1,8 @@
-import { Component, computed, input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { Month, Project, Selected } from '../../../model';
+import { Employee, EmployeeTimesheet, Month, Project, Selected } from '../../../model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -36,6 +36,41 @@ export class TimesheetEntryContainerComponent {
     project: this.projects[0],
     month: this.months[new Date().getMonth()],
     year: new Date().getFullYear(),
+  }
+
+  daysInSelectedMonth: number = new Date(this.months.indexOf(this.selected.month), this.selected.year, 0).getDate();
+  daysInSelectedMonthColumns = Array.from({ length: this.daysInSelectedMonth }, (_, i) => i + 1);
+
+  data: Array<EmployeeTimesheet> = [
+    {
+      employee: { name: "TestEmployee1" },
+      entries: [4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+    },
+    {
+      employee: { name: "TestEmployee2" },
+      entries: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+    },
+    {
+      employee: { name: "TestEmployee3" },
+      entries: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+    },
+  ]
+
+  calculateEmployeeTotalColumn(row: EmployeeTimesheet): number {
+    const clippedEntries = row.entries.slice(0, this.daysInSelectedMonth)
+    return clippedEntries.reduce((total, cell) => total + cell);
+  }
+
+  calculateGrandTotalColumn() {
+    let grandTotal = 0;
+    this.data.forEach(timesheet => grandTotal += this.calculateEmployeeTotalColumn(timesheet));
+    return grandTotal;
+  }
+
+  onMonthChange(month: Month) {
+    this.selected.month = month;
+    this.daysInSelectedMonth = new Date(this.months.indexOf(this.selected.month), this.selected.year, 0).getDate();
+    this.daysInSelectedMonthColumns = Array.from({ length: this.daysInSelectedMonth }, (_, i) => i + 1);
   }
 
   exportToPDF() {

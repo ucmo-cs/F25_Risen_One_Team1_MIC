@@ -31,3 +31,27 @@
   color: var(--roc-color);
   background-color: white;
 }
+
+.timesheet-table {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-collapse: collapse;
+  display: flex;
+}
+
+.timesheet-table table {
+  margin: auto;
+  width: 100%;
+}
+
+.timesheet-table th {
+  background-color: black;
+  color: white;
+  padding: 13px 10px;
+  border: 1px solid white;
+}
+
+.timesheet-table tr td {
+  padding: 10px;
+  border: 1px #ccc solid;
+}
