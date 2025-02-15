@@ -1,131 +1,127 @@
-
-body{
-    width: 100vw;
-    height: 100vh;
-    background-color: transparent  ;
-    overflow: hidden;
-    background-image: url("/assets/mountain-bg.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  overflow: hidden;
+  background-image: url("/assets/mountain-bg.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
-#yellow{
-    color:#e0a951;
-}
-
-.example-spacer{
-    flex: 1 1 auto;
-}
-#img-container{
-    justify-content: center;
-    align-items: right;
-    height: fit-content;
-    width: fit-content;
-    padding: 16px;
-    background-color: #e0a951;
-    border-radius: 100%;
-}
-#img-container2{
-    transform: translateY(-250px);
-    justify-content: center;
-    align-items: right;
-    height: fit-content;
-    width: fit-content;
-    padding: 16px;
-    background-color: #e0a951;
-    border-radius: 100%;
-    z-index: 1;
-}
-#logo2{
-    
-    width: 200px;
-    height: 200px;
-    border-radius: 100%;
-    background-color: black;
-    background-image: url("/assets/RisenOneWhite.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    
-}
-#logo{
-    width: 500px;
-    height: 500px;
-    border-radius: 100%;
-    background-color: black;
-    background-image: url("/assets/eliteemployees.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-mat-grid-list{
-    margin: 32px;
+#yellow {
+  color: #e0a951;
 }
 
-#hero-img{
-    transform: translateY(10%);
+.example-spacer {
+  flex: 1 1 auto;
+}
+#img-container {
+  justify-content: center;
+  align-items: right;
+  height: fit-content;
+  width: fit-content;
+  padding: 16px;
+  background-color: #e0a951;
+  border-radius: 100%;
+}
+#img-container2 {
+  transform: translateY(-250px);
+  justify-content: center;
+  align-items: right;
+  height: fit-content;
+  width: fit-content;
+  padding: 16px;
+  background-color: #e0a951;
+  border-radius: 100%;
+  z-index: 1;
+}
+#logo2 {
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  background-color: black;
+  background-image: url("/assets/RisenOneWhite.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+#logo {
+  width: 500px;
+  height: 500px;
+  border-radius: 100%;
+  background-color: black;
+  background-image: url("/assets/eliteemployees.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+mat-grid-list {
+  margin: 32px;
 }
 
-#tools{
-    background-color: black;
+#hero-img {
+  transform: translateY(10%);
 }
-#white{
-    color: white;
+
+#tools {
+  background-color: black;
+}
+#white {
+  color: white;
 }
 
 mat-card {
-    margin: auto;
-    width: 80%;
+  margin: auto;
+  width: 80%;
 }
 
-
 .cta-card {
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .login-form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-    margin-right: 10px;
-    width: 80px;
+  margin-right: 10px;
+  width: 80px;
 }
 
 .form-field {
-    width: calc(100% - 90px);
+  width: calc(100% - 90px);
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 mat-form-field .mat-form-field-infix {
-    padding: 0 12px;  /* Ensure padding inside the form field */
+  padding: 0 12px; /* Ensure padding inside the form field */
 }
 
 mat-input-element {
-    height: 56px;  /* Ensure the height of the input is adequate */
-    line-height: 1.5;  /* Adjust line height if necessary */
+  height: 56px; /* Ensure the height of the input is adequate */
+  line-height: 1.5; /* Adjust line height if necessary */
 }
 
 .login-button {
-    align-self: center;
-    width: 100px;
+  align-self: center;
+  width: 100px;
 }
 .login-heading {
-    text-align: center;
-    font-size: 1.5em; /* Adjust font size as needed to fit on one line */
-    margin-bottom: 20px;
-    white-space: nowrap; /* Ensure the text stays on one line */
+  text-align: center;
+  font-size: 1.5em; /* Adjust font size as needed to fit on one line */
+  margin-bottom: 20px;
+  white-space: nowrap; /* Ensure the text stays on one line */
 }
