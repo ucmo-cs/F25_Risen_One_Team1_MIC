@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TimesheetEntryContainerComponent } from '../timesheet-entry-container/timesheet-entry-container.component';
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
+import { MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { Selected, Signature } from '../../../model';
 
 @Component({
   selector: 'app-timesheet',
@@ -11,10 +12,14 @@ import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle
     MatCardHeader,
     MatCardTitle,
     MatCardContent,
+    MatCardFooter,
   ],
   templateUrl: './timesheet.component.html',
   styleUrl: './timesheet.component.css'
 })
 export class TimesheetComponent {
-
+  signature: Signature = {
+    name: "",
+    date: "",
+  }
 }
