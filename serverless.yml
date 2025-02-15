@@ -65,3 +65,6 @@ custom:
   s3Sync:
     - bucketName: risenonefrontend
       localDir: frontend/dist/frontend/browser/
+      params:
+        - index.html:
+          CacheControl: 'no-cache'
