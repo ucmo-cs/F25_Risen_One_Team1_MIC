@@ -13,7 +13,7 @@
 
         <mat-form-field>
           <mat-label>Select Month</mat-label>
-          <mat-select [(value)]="selected.month" (selectionChange)="onMonthChange($event.value)">
+          <mat-select [(value)]="selected.month" (selectionChange)="changeTimesheetMonth($event.value)">
             <mat-option *ngFor="let month of months" [value]="month">
               {{ month }}
             </mat-option>
@@ -42,21 +42,21 @@
       <thead>
         <tr>
           <th>Employee</th>
-          <th *ngFor="let day of daysInSelectedMonthColumns">{{ day }}</th>
+          <th *ngFor="let day of selected.dayColumns">{{ day }}</th>
           <th>Total</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let row of data">
           <td>{{ row.employee.name }}</td>
-          <td *ngFor="let day of daysInSelectedMonthColumns">{{ row.entries[day] }}</td>
+          <td *ngFor="let day of selected.dayColumns">{{ row.entries[day] }}</td>
           <td>{{ calculateEmployeeTotalColumn(row) }}</td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <!-- so that the 'grand total' cell on the last row appear aligned on the right with the other totals -->
-          <td [colSpan]="daysInSelectedMonth+1"></td>
+          <td [colSpan]="selected.dayCount+1"></td>
           <td>{{ calculateGrandTotalColumn() }}</td>
         </tr>
       </tfoot>

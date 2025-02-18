@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './timesheet-entry-container.component.css'
 })
 
-export class TimesheetEntryContainerComponent {
+export class TimesheetEntryContainerComponent implements OnInit {
   months: Month[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -36,10 +36,13 @@ export class TimesheetEntryContainerComponent {
     project: this.projects[0],
     month: this.months[new Date().getMonth()],
     year: new Date().getFullYear(),
+    dayCount: 0,
+    dayColumns: [],
   }
 
-  daysInSelectedMonth: number = new Date(this.months.indexOf(this.selected.month), this.selected.year, 0).getDate();
-  daysInSelectedMonthColumns = Array.from({ length: this.daysInSelectedMonth }, (_, i) => i + 1);
+  ngOnInit() {
+    this.changeTimesheetMonth(this.months[new Date().getMonth()])
+  }
 
   data: Array<EmployeeTimesheet> = [
     {
@@ -57,7 +60,7 @@ export class TimesheetEntryContainerComponent {
   ]
 
   calculateEmployeeTotalColumn(row: EmployeeTimesheet): number {
-    const clippedEntries = row.entries.slice(0, this.daysInSelectedMonth)
+    const clippedEntries = row.entries.slice(0, this.selected.dayCount)
     return clippedEntries.reduce((total, cell) => total + cell);
   }
 
@@ -67,10 +70,16 @@ export class TimesheetEntryContainerComponent {
     return grandTotal;
   }
 
-  onMonthChange(month: Month) {
-    this.selected = { ...this.selected, month };
-    this.daysInSelectedMonth = new Date(this.selected.year, this.months.indexOf(this.selected.month)+1, 0).getDate();
-    this.daysInSelectedMonthColumns = Array.from({ length: this.daysInSelectedMonth }, (_, i) => i + 1);
+  changeTimesheetMonth(month: Month) {
+    const newDayCount = new Date(this.selected.year, this.months.indexOf(this.selected.month)+1, 0).getDate();
+    const newDayColumns = Array.from({ length: newDayCount }, (_, i) => i + 1);
+
+    this.selected = { 
+      ...this.selected, 
+      month: month, 
+      dayCount: newDayCount,
+      dayColumns: newDayColumns,
+    }
   }
 
   exportToPDF() {

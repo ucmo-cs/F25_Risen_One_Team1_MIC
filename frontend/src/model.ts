@@ -11,6 +11,8 @@ export interface Selected {
   project: Project,
   month: Month,
   year: number,
+  dayCount: number,
+  dayColumns: Array<any>
 }
 
 export interface Signature {
