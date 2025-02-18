@@ -68,8 +68,8 @@ export class TimesheetEntryContainerComponent {
   }
 
   onMonthChange(month: Month) {
-    this.selected.month = month;
-    this.daysInSelectedMonth = new Date(this.months.indexOf(this.selected.month), this.selected.year, 0).getDate();
+    this.selected = { ...this.selected, month };
+    this.daysInSelectedMonth = new Date(this.selected.year, this.months.indexOf(this.selected.month)+1, 0).getDate();
     this.daysInSelectedMonthColumns = Array.from({ length: this.daysInSelectedMonth }, (_, i) => i + 1);
   }
 
