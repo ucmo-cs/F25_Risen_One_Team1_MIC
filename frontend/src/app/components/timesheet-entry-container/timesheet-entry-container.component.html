@@ -22,7 +22,7 @@
 
         <mat-form-field>
           <mat-label>Select Year</mat-label>
-          <mat-select [(value)]="selected.year">
+          <mat-select [(value)]="selected.year" (selectionChange)="changeTimesheetYear($event.value)">
             <mat-option [value]="2024">2024</mat-option>
             <mat-option [value]="2025">2025</mat-option>
           </mat-select>

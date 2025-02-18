@@ -42,6 +42,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
   ngOnInit() {
     this.changeTimesheetMonth(this.months[new Date().getMonth()])
+    this.changeTimesheetYear(new Date().getFullYear())
   }
 
   data: Array<EmployeeTimesheet> = [
@@ -79,6 +80,16 @@ export class TimesheetEntryContainerComponent implements OnInit {
       month: month, 
       dayCount: newDayCount,
       dayColumns: newDayColumns,
+    }
+  }
+
+  changeTimesheetYear(year: number) {
+    this.selected = {
+      ...this.selected,
+      year: year,
+    }
+    if (this.selected.month === "February") {
+      this.changeTimesheetMonth(this.selected.month) // update in case of leap year
     }
   }
 
