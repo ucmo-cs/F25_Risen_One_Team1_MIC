@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "0.0.1",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.744.0",
-    "backend": "file:"
+    "@aws-sdk/client-dynamodb": "^3.744.0"
   }
 }
