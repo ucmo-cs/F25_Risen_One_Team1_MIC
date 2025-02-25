@@ -1,5 +1,4 @@
 <!--Main Content of Page (Hero)-->
-<h1>{{ testa }}</h1>
 <main>
   <mat-grid-list id="grid" cols="2" rowHeight="90vh">
     <!--Grid Tile Hero images-->
@@ -30,11 +29,16 @@
                 Portal</span
               >
             </h1>
-            <h2>Login</h2>
-            <form class="login-form" ngNoForm>
+            <h2 class="login-heading">Login</h2>
+            <form
+              #loginForm="ngForm"
+              class="login-form"
+              (ngSubmit)="login(loginForm)"
+              novalidate
+            >
               <div class="form-group">
-                <label for="username">Username:</label>
-                <mat-form-field appearance="fill" class="form-field">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Username</mat-label>
                   <input
                     matInput
                     id="username"
@@ -42,12 +46,19 @@
                     type="text"
                     required
                     [(ngModel)]="username"
+                    #usernameInput="ngModel"
                   />
+                  <mat-error
+                    *ngIf="usernameInput.invalid && usernameInput.touched"
+                  >
+                    Username is required.
+                  </mat-error>
                 </mat-form-field>
               </div>
+
               <div class="form-group">
-                <label for="password">Password:</label>
-                <mat-form-field appearance="fill" class="form-field">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Password</mat-label>
                   <input
                     matInput
                     id="password"
@@ -55,16 +66,25 @@
                     type="password"
                     required
                     [(ngModel)]="password"
+                    #passwordInput="ngModel"
                   />
+                  <mat-error
+                    *ngIf="passwordInput.invalid && passwordInput.touched"
+                  >
+                    Password is required.
+                  </mat-error>
                 </mat-form-field>
               </div>
+
               <button
                 mat-raised-button
                 color="primary"
                 class="login-button"
-                (click)="login()"
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
               >
-                Login
+                <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+                <span *ngIf="!isLoading">Login</span>
               </button>
             </form>
           </mat-card-content>

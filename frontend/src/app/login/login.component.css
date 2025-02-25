@@ -120,8 +120,8 @@ mat-input-element {
   width: 100px;
 }
 .login-heading {
-  text-align: center;
   font-size: 1.5em; /* Adjust font size as needed to fit on one line */
-  margin-bottom: 20px;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
   white-space: nowrap; /* Ensure the text stays on one line */
 }
