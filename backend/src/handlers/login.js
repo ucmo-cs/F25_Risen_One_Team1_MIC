@@ -4,6 +4,13 @@ const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb');
 
 const dynamoDb = new DynamoDBClient();
 
+const CORS = {
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true
+  }
+};
+
 module.exports.handler = async event => {
   try {
     const requestBody = JSON.parse(event.body);
@@ -21,16 +28,14 @@ module.exports.handler = async event => {
     if (!data.Item || data.Item.password.S !== requestBody.password) {
       return {
         statusCode: 401,
+        ...CORS,
         body: JSON.stringify({ message: 'Invalid username or password' })
       };
     }
 
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
+      ...CORS,
       body: JSON.stringify({ message: 'Login successful' })
     };
   } catch (error) {
@@ -38,10 +43,7 @@ module.exports.handler = async event => {
 
     return {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
+      ...CORS,
       body: JSON.stringify({ message: error.message || 'Internal server error' })
     };
   }

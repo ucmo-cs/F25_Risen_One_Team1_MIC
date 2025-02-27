@@ -17,3 +17,22 @@
 .timesheet-header mat-card-title {
   font-size: 2.3em;
 }
+
+.timesheet-footer {
+  display: flex;
+  margin: 0 32px;
+}
+
+.timesheet-footer span:first-child {
+  margin-right: 1.8rem;
+  padding-right: 6rem;
+}
+
+.timesheet-footer span:last-child {
+  padding-right: 4rem;
+}
+
+.timesheet-footer span {
+  border-top: 1px solid #aaa;
+  padding-top: 0.4rem;
+}
