@@ -11,6 +11,8 @@ stages:
   default:
     params:
       tableName: 'users-table-${sls:stage}'
+      tableName: 'projects-table-${sls:stage}'
+      tableName: 'timesheet-table-${sls:stage}'
 
 provider:
   name: aws
@@ -28,8 +30,12 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
+            - Fn::GetAtt: [ProjectsTable, Arn]
+            - Fn::GetAtt: [TimesheetTable, Arn]
   environment:
     USERS_TABLE: ${param:tableName}
+    PROJECTS_TABLE: ${param:tableName}
+    TIMESHEET_TABLE: ${param:tableName}
 
 resources:
   Resources:
@@ -45,13 +51,141 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
+    ProjectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${param:projectsTableName}
+        AttributeDefinitions:
+          - AttributeName: projectId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: projectId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    TimesheetTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${param:timesheetTableName}
+        AttributeDefinitions:
+          - AttributeName: timesheetId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: timesheetId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
 functions:
   login:
-    handler: backend/src/handlers/login.handler
+    handler: backend/src/handlers/login.handler #need to build
     events:
       - http:
           path: login
           method: post
+          cors: true
+
+  createUser:
+    handler: backend/src/handlers/createUser.handler #need to build
+    events:
+      - http:
+          path: user/create
+          method: post
+          cors: true
+
+  getUser:
+    handler: backend/src/handlers/readUser.handler #need to build
+    events:
+      - http:
+          path: user/get
+          method: get
+          cors: true
+
+  updateUser:
+    handler: backend/src/handlers/updateUser.handler #need to build
+    events:
+      - http:
+          path: user/update
+          method: put
+          cors: true
+
+  deleteUser:
+    handler: backend/src/handlers/deleteUser.handler #need to build
+    events:
+      - http:
+          path: user/delete
+          method: delete
+          cors: true
+
+  createProject:
+    handler: backend/src/handlers/createProject.handler #need to build
+    events:
+      - http:
+          path: project/create
+          method: post
+          cors: true
+
+  getProject:
+    handler: backend/src/handlers/getProject.handler #need to build
+    events:
+      - http:
+          path: projects
+          method: get
+          cors: true
+
+  readProject:
+    handler: backend/src/handlers/readProject.handler #need to build
+    events:
+      - http:
+          path: project/read
+          method: post
+          cors: true
+
+  updateProject:
+    handler: backend/src/handlers/updateProject.handler #need to build
+    events:
+      - http:
+          path: project/update
+          method: post
+          cors: true
+
+  deleteProject:
+    handler: backend/src/handlers/deleteProject.handler #need to build
+    events:
+      - http:
+          path: project/delete
+          method: delete
+          cors: true
+
+  createTimesheet:
+    handler: backend/src/handlers/createTimesheet.handler #need to build
+    events:
+      - http:
+          path: timesheet/create
+          method: post
+          cors: true
+
+  getTimesheet:
+    handler: backend/src/handlers/readTimesheet.handler #need to build
+    events:
+      - http:
+          path: timesheet
+          method: get
+          cors: true
+
+  updateTimesheet:
+    handler: backend/src/handlers/updateTimesheet.handler #need to build
+    events:
+      - http:
+          path: timesheet/update
+          method: put
+          cors: true
+
+  deleteTimesheet:
+    handler: backend/src/handlers/deleteTimesheet.handler #need to build
+    events:
+      - http:
+          path: timesheet/delete
+          method: delete
           cors: true
 
 package:
