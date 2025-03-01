@@ -10,9 +10,9 @@ plugins:
 stages:
   default:
     params:
-      tableName: 'users-table-${sls:stage}'
-      tableName: 'projects-table-${sls:stage}'
-      tableName: 'timesheet-table-${sls:stage}'
+      usersTableName: 'users-table-${sls:stage}'
+      projectsTableName: 'projects-table-${sls:stage}'
+      timesheetTableName: 'timesheet-table-${sls:stage}'
 
 provider:
   name: aws
@@ -33,16 +33,16 @@ provider:
             - Fn::GetAtt: [ProjectsTable, Arn]
             - Fn::GetAtt: [TimesheetTable, Arn]
   environment:
-    USERS_TABLE: ${param:tableName}
-    PROJECTS_TABLE: ${param:tableName}
-    TIMESHEET_TABLE: ${param:tableName}
+    USERS_TABLE: ${param:usersTableName}
+    PROJECTS_TABLE: ${param:projectsTableName}
+    TIMESHEET_TABLE: ${param:timesheetTableName}
 
 resources:
   Resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${param:tableName}
+        TableName: ${param:usersTableName}
         AttributeDefinitions:
           - AttributeName: username
             AttributeType: S
