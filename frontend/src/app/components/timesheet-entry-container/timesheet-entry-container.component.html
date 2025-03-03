@@ -1,4 +1,4 @@
-<div class="timesheet-entry-container">
+<div class="timesheet">
   <div class="timesheet-header">
     <div class="timesheet-options">
       <mat-form-field>
@@ -50,12 +50,12 @@
       <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">
         Export to PDF
       </button>
-      <button mat-button (click)="edit()">Edit</button>
+      <button mat-button [disabled]="isEditing" (click)="edit()">Edit</button>
       <button mat-button (click)="save()">Save</button>
     </div>
   </div>
 
-  <div class="timesheet-table">
+  <div class="timesheet-table" [class.editing]="isEditing">
     <mat-spinner class="loader" *ngIf="isLoading" diameter="32"></mat-spinner>
 
     <table *ngIf="!isLoading">
@@ -69,14 +69,39 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of users">
-          <td>{{ row.username }}</td>
-          <ng-container *ngIf="getEmployeeHours(row.username) as employeeHours">
-            <td *ngFor="let hrs of employeeHours">
-              {{ hrs == -1 ? "" : hrs }}
-            </td>
+        <tr
+          *ngFor="
+            let employee of users;
+            let rowIndex = index;
+            trackBy: trackByUsername
+          "
+        >
+          <td>{{ employee.username }}</td>
+
+          <ng-container *ngIf="employeeHours(employee.username) as hoursArr">
+            <ng-container
+              *ngFor="
+                let hour of hoursArr;
+                let i = index;
+                trackBy: trackByIndex
+              "
+            >
+              <td>
+                <span *ngIf="!isEditing">{{ hour < 0 ? "" : hour }}</span>
+
+                <input
+                  *ngIf="isEditing"
+                  type="text"
+                  [value]="hour < 0 ? '' : hour"
+                  (input)="updateHours(employee.username, i, $event)"
+                  (keydown)="onKeyDown($event, rowIndex, i)"
+                  min="0"
+                />
+              </td>
+            </ng-container>
+
             <td>
-              {{ calculateEmployeeTotalColumn(employeeHours) }}
+              {{ calculateEmployeeTotalColumn(hoursArr) }}
             </td>
           </ng-container>
         </tr>

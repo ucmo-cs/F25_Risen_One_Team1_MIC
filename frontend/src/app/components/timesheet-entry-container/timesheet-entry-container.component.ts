@@ -6,6 +6,12 @@ import { Project, Selected, Timesheet, User } from '../../../model';
 import { CommonModule } from '@angular/common';
 import { UserApiService } from '../../services/user.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+interface EmployeeRow {
+  username: string;
+  hours: number[];
+}
 
 @Component({
   selector: 'app-timesheet-entry-container',
@@ -18,6 +24,8 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     MatButton,
     MatProgressSpinner,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './timesheet-entry-container.component.html',
   styleUrl: './timesheet-entry-container.component.css',
@@ -48,7 +56,10 @@ export class TimesheetEntryContainerComponent implements OnInit {
             employees: [
               {
                 username: 'admin',
-                hours: [2, 4, 5, 0, 1, 22],
+                hours: [
+                  2, 4, 5, 0, 1, 22, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                ],
               },
             ],
           },
@@ -61,8 +72,8 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
   users: User[] = [];
   selected: Selected = null!;
-  selectedTimesheet: Timesheet | null = null;
   isLoading = true;
+  isEditing = true;
 
   constructor(private userService: UserApiService) {}
 
@@ -87,9 +98,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
   }
 
   calculateGrandTotalColumn() {
-    if (!this.selectedTimesheet) return 0;
-
-    return this.selectedTimesheet.employees.reduce(
+    return this.employees.reduce(
       (acc, v) => (acc += this.calculateEmployeeTotalColumn(v.hours)),
       0
     );
@@ -105,23 +114,99 @@ export class TimesheetEntryContainerComponent implements OnInit {
       month,
       dayColumns: newDayColumns,
     };
-    this.selectedTimesheet =
-      this.projects.find((p) => p.id === projectId)?.years[year]?.[month] ||
-      null;
   }
 
-  getEmployeeHours(username: string): number[] {
-    const entry = this.selectedTimesheet?.employees.find(
-      (e) => e.username === username
+  get selectedProject(): Project | undefined {
+    return this.projects.find((p) => p.id === this.selected.projectId);
+  }
+
+  get employees(): EmployeeRow[] {
+    if (this.selectedProject) {
+      return (
+        this.selectedProject.years[this.selected.year]?.[this.selected.month]
+          ?.employees || []
+      );
+    }
+    return [];
+  }
+
+  employeeHours(username: string): number[] {
+    return (
+      this.employees.find((e) => e.username === username)?.hours ||
+      Array.from({ length: this.selected.dayColumns.length }, () => -1)
     );
-    const arr: number[] = Array.from({
-      length: this.selected.dayColumns.length,
-    });
-    arr.fill(-1);
+  }
 
-    entry?.hours.forEach((h, i) => (arr[i] = h));
+  trackByUsername(index: number, user: User): string {
+    return user.username;
+  }
 
-    return arr;
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  updateHours(username: string, dayIndex: number, event: Event) {
+    const newValue = Number((event.target as HTMLInputElement)?.value);
+    const emp = this.employees.find((e) => e.username === username);
+
+    if (!emp) {
+      const hoursArr = Array.from(
+        { length: this.selected.dayColumns.length },
+        () => -1
+      );
+
+      if (!isNaN(newValue)) hoursArr[dayIndex] = newValue;
+
+      this.employees.push({
+        username,
+        hours: hoursArr,
+      });
+
+      return;
+    }
+
+    emp.hours[dayIndex] = isNaN(newValue) ? -1 : newValue;
+  }
+
+  onKeyDown(event: KeyboardEvent, rowIndex: number, colIndex: number) {
+    const input = event.target as HTMLInputElement;
+    const cursorAtLeft = input.selectionStart === 0;
+    const cursorAtRight = input.selectionEnd === input.value.length;
+
+    let nextInput: HTMLElement | null = null;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        if (cursorAtLeft || cursorAtRight)
+          nextInput = this.getInputElement(rowIndex - 1, colIndex);
+        break;
+      case 'ArrowDown':
+        if (cursorAtLeft || cursorAtRight)
+          nextInput = this.getInputElement(rowIndex + 1, colIndex);
+        break;
+      case 'ArrowLeft':
+        if (cursorAtLeft)
+          nextInput = this.getInputElement(rowIndex, colIndex - 1);
+        break;
+      case 'ArrowRight':
+        if (cursorAtRight)
+          nextInput = this.getInputElement(rowIndex, colIndex + 1);
+        break;
+    }
+
+    if (nextInput) {
+      event.preventDefault();
+      nextInput.focus();
+    }
+  }
+
+  getInputElement(rowIndex: number, colIndex: number): HTMLElement | null {
+    const table = document.querySelector('table tbody');
+    if (!table) return null;
+
+    const row = table.children[rowIndex] as HTMLElement;
+    const cell = row?.children[colIndex + 1] as HTMLElement;
+    return cell?.querySelector('input') || null;
   }
 
   exportToPDF() {
@@ -129,10 +214,11 @@ export class TimesheetEntryContainerComponent implements OnInit {
   }
 
   edit() {
-    alert('TODO edit');
+    this.isEditing = true;
   }
 
   save() {
-    alert('TODO save');
+    this.isEditing = false;
+    // alert('TODO save');
   }
 }

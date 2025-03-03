@@ -1,8 +1,10 @@
-<app-header *ngIf="!router.url.startsWith('/login')"></app-header>
-<div class="content-div">
-  <app-sidenav *ngIf="!router.url.startsWith('/login')"></app-sidenav>
-  <div class="content">
-    <router-outlet></router-outlet>
+<div class="app-container">
+  <app-header *ngIf="!router.url.startsWith('/login')"></app-header>
+  <div class="content-div">
+    <app-sidenav *ngIf="!router.url.startsWith('/login')"></app-sidenav>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
   </div>
+  <app-footer *ngIf="!router.url.startsWith('/login')"></app-footer>
 </div>
-<app-footer *ngIf="!router.url.startsWith('/login')"></app-footer>
