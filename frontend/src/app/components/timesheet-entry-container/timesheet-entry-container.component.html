@@ -1,62 +1,90 @@
 <div class="timesheet-entry-container">
-
   <div class="timesheet-header">
-      <div class="timesheet-options">
-        <mat-form-field>
-          <mat-label>Project Name</mat-label>
-          <mat-select [(value)]="selected.project.id">
-            <mat-option *ngFor="let project of projects" [value]="project.id">
-              {{ project.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div class="timesheet-options">
+      <mat-form-field>
+        <mat-label>Project Name</mat-label>
+        <mat-select
+          [(value)]="selected.projectId"
+          (selectionChange)="
+            changeTimesheet($event.value, selected.year, selected.month)
+          "
+        >
+          <mat-option *ngFor="let project of projects" [value]="project.id">
+            {{ project.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Select Month</mat-label>
-          <mat-select [(value)]="selected.month" (selectionChange)="changeTimesheetMonth($event.value)">
-            <mat-option *ngFor="let month of months" [value]="month">
-              {{ month }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field>
+        <mat-label>Select Month</mat-label>
+        <mat-select
+          [(value)]="selected.month"
+          (selectionChange)="
+            changeTimesheet(selected.projectId, selected.year, $event.value)
+          "
+        >
+          <mat-option
+            *ngFor="let month of [].constructor(12); let index = index"
+            [value]="index"
+          >
+            {{ MONTHS[index] }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Select Year</mat-label>
-          <mat-select [(value)]="selected.year" (selectionChange)="changeTimesheetYear($event.value)">
-            <mat-option [value]="2024">2024</mat-option>
-            <mat-option [value]="2025">2025</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+      <mat-form-field>
+        <mat-label>Select Year</mat-label>
+        <mat-select
+          [(value)]="selected.year"
+          (selectionChange)="
+            changeTimesheet(selected.projectId, $event.value, selected.month)
+          "
+        >
+          <mat-option [value]="2024">2024</mat-option>
+          <mat-option [value]="2025">2025</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-      <div class="timesheet-actions">
-        <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">Export to PDF</button>
-        <button mat-button (click)="edit()">Edit</button>
-        <button mat-button (click)="save()">Save</button>
-      </div>
+    <div class="timesheet-actions">
+      <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">
+        Export to PDF
+      </button>
+      <button mat-button (click)="edit()">Edit</button>
+      <button mat-button (click)="save()">Save</button>
+    </div>
   </div>
 
-
   <div class="timesheet-table">
-    <table>
+    <mat-spinner class="loader" *ngIf="isLoading" diameter="32"></mat-spinner>
+
+    <table *ngIf="!isLoading">
       <thead>
         <tr>
           <th>Employee</th>
-          <th *ngFor="let day of selected.dayColumns">{{ day }}</th>
+          <th *ngFor="let day of selected.dayColumns">
+            {{ day }}
+          </th>
           <th>Total</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of data">
-          <td>{{ row.employee.name }}</td>
-          <td *ngFor="let day of selected.dayColumns">{{ row.entries[day] }}</td>
-          <td>{{ calculateEmployeeTotalColumn(row) }}</td>
+        <tr *ngFor="let row of users">
+          <td>{{ row.username }}</td>
+          <ng-container *ngIf="getEmployeeHours(row.username) as employeeHours">
+            <td *ngFor="let hrs of employeeHours">
+              {{ hrs == -1 ? "" : hrs }}
+            </td>
+            <td>
+              {{ calculateEmployeeTotalColumn(employeeHours) }}
+            </td>
+          </ng-container>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <!-- so that the 'grand total' cell on the last row appear aligned on the right with the other totals -->
-          <td [colSpan]="selected.dayCount+1"></td>
+          <td [colSpan]="selected.dayColumns.length + 1"></td>
           <td>{{ calculateGrandTotalColumn() }}</td>
         </tr>
       </tfoot>

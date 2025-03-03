@@ -63,4 +63,9 @@
 .timesheet-table tr td {
   padding: 10px;
   border: 1px #ccc solid;
+  min-width: 2ch;
+}
+
+.loader {
+  margin: 1rem auto;
 }

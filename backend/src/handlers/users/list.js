@@ -9,7 +9,10 @@ const docClient = DynamoDBDocumentClient.from(dynamoDb);
 
 export const handler = async () => {
   try {
-    const data = await docClient.send(new ScanCommand({ TableName: process.env.PROJECTS_TABLE }));
+    const data = await docClient.send(new ScanCommand({ TableName: process.env.USERS_TABLE }));
+    data.Items.forEach(i => {
+      delete i.password;
+    });
 
     return createResponse(200, data.Items);
   } catch (error) {

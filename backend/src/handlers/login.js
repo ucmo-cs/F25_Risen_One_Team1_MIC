@@ -1,16 +1,9 @@
 'use strict';
 
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb';
+import { createResponse } from '../utils.js';
 
 const dynamoDb = new DynamoDBClient();
-
-const HEADERS = {
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': true,
-    'Content-Type': 'application/json'
-  }
-};
 
 export const handler = async event => {
   try {
@@ -27,25 +20,12 @@ export const handler = async event => {
     const data = await dynamoDb.send(new GetItemCommand(params));
 
     if (!data.Item || data.Item.password.S !== requestBody.password) {
-      return {
-        statusCode: 401,
-        ...HEADERS,
-        body: JSON.stringify({ message: 'Invalid username or password' })
-      };
+      return createResponse(401, { message: 'Invalid username or password' });
     }
 
-    return {
-      statusCode: 200,
-      ...HEADERS,
-      body: JSON.stringify({ message: 'Login successful' })
-    };
+    return createResponse(200, { message: 'Login successful' });
   } catch (error) {
     console.error('Error:', error);
-
-    return {
-      statusCode: 500,
-      ...HEADERS,
-      body: JSON.stringify({ message: error.message || 'Internal server error' })
-    };
+    return createResponse(500, { message: error.message || 'Internal server error' });
   }
 };
