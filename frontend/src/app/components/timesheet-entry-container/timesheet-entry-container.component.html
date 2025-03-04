@@ -50,8 +50,9 @@
       <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">
         Export to PDF
       </button>
-      <button mat-button [disabled]="isEditing" (click)="edit()">Edit</button>
-      <button mat-button (click)="save()">Save</button>
+      <button mat-button (click)="edit()">
+        {{ isEditing ? "Done" : "Edit" }}
+      </button>
     </div>
   </div>
 
@@ -93,9 +94,10 @@
                   *ngIf="isEditing"
                   type="text"
                   [value]="hour < 0 ? '' : hour"
-                  (input)="updateHours(employee.username, i, $event)"
+                  (blur)="updateHours(employee.username, i, $event)"
                   (keydown)="onKeyDown($event, rowIndex, i)"
                   min="0"
+                  maxlength="5"
                 />
               </td>
             </ng-container>

@@ -45,15 +45,20 @@
 .timesheet-table {
   display: block;
   width: 100%;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .timesheet-table table {
   width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
   border-collapse: collapse;
   table-layout: auto;
+}
+
+.timesheet-table table tr {
+  min-height: 40px;
+  max-height: 40px;
+  height: 40px;
 }
 
 .timesheet-table th {
@@ -66,7 +71,7 @@
 .timesheet-table tr td {
   padding: 10px;
   border: 1px #ccc solid;
-  min-width: 2ch;
+  min-width: 4ch;
 }
 
 .timesheet-table.editing tr td {
@@ -75,6 +80,7 @@
 
 .timesheet-table input {
   box-sizing: border-box;
+  display: block;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
@@ -83,7 +89,7 @@
   text-align: center;
   border: none;
   min-width: 4ch;
-  width: 100%;
+  width: 4ch;
   height: 40px;
   padding: 4px;
 }

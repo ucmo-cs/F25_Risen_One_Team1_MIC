@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -114,6 +114,12 @@ export class TimesheetEntryContainerComponent implements OnInit {
       month,
       dayColumns: newDayColumns,
     };
+
+    const proj = this.selectedProject;
+    if (proj && !proj.years[year]) proj.years[year] = {};
+
+    if (proj && !proj.years[year][month])
+      proj.years[year][month] = { employees: [] };
   }
 
   get selectedProject(): Project | undefined {
@@ -121,13 +127,12 @@ export class TimesheetEntryContainerComponent implements OnInit {
   }
 
   get employees(): EmployeeRow[] {
-    if (this.selectedProject) {
-      return (
-        this.selectedProject.years[this.selected.year]?.[this.selected.month]
-          ?.employees || []
-      );
-    }
-    return [];
+    if (!this.selectedProject) return [];
+
+    return (
+      this.selectedProject.years[this.selected.year]?.[this.selected.month]
+        ?.employees || []
+    );
   }
 
   employeeHours(username: string): number[] {
@@ -146,29 +151,23 @@ export class TimesheetEntryContainerComponent implements OnInit {
   }
 
   updateHours(username: string, dayIndex: number, event: Event) {
-    const newValue = Number((event.target as HTMLInputElement)?.value);
-    const emp = this.employees.find((e) => e.username === username);
+    const input = event.target as HTMLInputElement;
+    const hours = this.employeeHours(username);
 
-    if (!emp) {
-      const hoursArr = Array.from(
-        { length: this.selected.dayColumns.length },
-        () => -1
-      );
+    let newValue = Number(input.value || '?');
+    if (isNaN(newValue) || newValue < 0) newValue = -1;
 
-      if (!isNaN(newValue)) hoursArr[dayIndex] = newValue;
+    input.value = newValue < 0 ? '' : String(newValue);
 
-      this.employees.push({
-        username,
-        hours: hoursArr,
-      });
+    hours[dayIndex] = newValue;
 
-      return;
-    }
-
-    emp.hours[dayIndex] = isNaN(newValue) ? -1 : newValue;
+    if (!this.employees.some((e) => e.username === username))
+      this.employees.push({ username, hours });
   }
 
   onKeyDown(event: KeyboardEvent, rowIndex: number, colIndex: number) {
+    if (event.shiftKey) return;
+
     const input = event.target as HTMLInputElement;
     const cursorAtLeft = input.selectionStart === 0;
     const cursorAtRight = input.selectionEnd === input.value.length;
@@ -214,11 +213,10 @@ export class TimesheetEntryContainerComponent implements OnInit {
   }
 
   edit() {
-    this.isEditing = true;
-  }
+    this.isEditing = !this.isEditing;
 
-  save() {
-    this.isEditing = false;
-    // alert('TODO save');
+    // Save
+    if (!this.isEditing) {
+    }
   }
 }
