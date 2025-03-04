@@ -40,17 +40,26 @@
             changeTimesheet(selected.projectId, $event.value, selected.month)
           "
         >
-          <mat-option [value]="2024">2024</mat-option>
-          <mat-option [value]="2025">2025</mat-option>
+          <mat-option
+            *ngFor="let year of [].constructor(5); let i = index"
+            [value]="currentYear - i"
+          >
+            {{ currentYear - i }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
     <div class="timesheet-actions">
-      <button class="inverted-btn" mat-stroked-button (click)="exportToPDF()">
+      <button
+        class="inverted-btn"
+        mat-stroked-button
+        (click)="exportToPDF()"
+        [disabled]="isLoading"
+      >
         Export to PDF
       </button>
-      <button mat-button (click)="edit()">
+      <button mat-button (click)="edit()" [disabled]="isLoading">
         {{ isEditing ? "Done" : "Edit" }}
       </button>
     </div>

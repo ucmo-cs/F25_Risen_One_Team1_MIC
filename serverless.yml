@@ -78,7 +78,7 @@ functions:
           cors: true
 
   updateProject:
-    handler: backend/src/handlers/updateProject.handler
+    handler: backend/src/handlers/projects/update.handler
     events:
       - http:
           path: project/update

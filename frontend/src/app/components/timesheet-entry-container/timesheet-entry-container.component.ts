@@ -70,6 +70,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
     { id: 2, name: 'TestProject3', years: {} },
   ];
 
+  currentYear = new Date().getFullYear();
   users: User[] = [];
   selected: Selected = null!;
   isLoading = true;
