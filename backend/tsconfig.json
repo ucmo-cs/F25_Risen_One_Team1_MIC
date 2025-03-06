@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "preserveConstEnums": true,
-    "strictNullChecks": true,
-    "sourceMap": true,
-    "allowJs": true,
-    "target": "es5",
-    "outDir": ".build",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "declaration": false,
     "moduleResolution": "node",
-    "lib": ["es2015"],
-    "baseUrl": ".",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
     "paths": {
       "@shared/*": ["../shared/src/*"]
     }

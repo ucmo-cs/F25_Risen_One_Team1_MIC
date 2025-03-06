@@ -1,6 +1,7 @@
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb';
 import { createResponse } from '../utils';
 import { z, ZodError } from 'zod';
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 const dynamoDb = new DynamoDBClient();
 
@@ -9,9 +10,9 @@ const loginSchema = z.object({
   password: z.string().trim().min(1, 'Password is required')
 });
 
-export const handler = async event => {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const { username, password } = loginSchema.parse(JSON.parse(event.body));
+    const { username, password } = loginSchema.parse(JSON.parse(event.body || ''));
 
     const params = {
       TableName: process.env.USERS_TABLE,

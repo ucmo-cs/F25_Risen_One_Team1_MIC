@@ -1,11 +1,12 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { createResponse } from '../../utils.js';
+import { createResponse } from '../../utils';
+import type { APIGatewayProxyResult } from 'aws-lambda';
 
 const dynamoDb = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(dynamoDb);
 
-export const handler = async () => {
+export const handler = async (): Promise<APIGatewayProxyResult> => {
   try {
     const data = await docClient.send(new ScanCommand({ TableName: process.env.USERS_TABLE }));
     data.Items?.forEach(i => {
