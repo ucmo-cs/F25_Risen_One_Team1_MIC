@@ -1,12 +1,13 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { Project, Selected, Timesheet, User } from '../../../model';
+import { Selected, User } from '../../../model';
 import { CommonModule } from '@angular/common';
 import { UserApiService } from '../../services/user.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { type Project } from '@shared/types';
 
 interface EmployeeRow {
   username: string;
@@ -52,17 +53,15 @@ export class TimesheetEntryContainerComponent implements OnInit {
       name: 'TestProject1',
       years: {
         2025: {
-          2: {
-            employees: [
-              {
-                username: 'admin',
-                hours: [
-                  2, 4, 5, 0, 1, 22, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                ],
-              },
-            ],
-          },
+          2: [
+            {
+              username: 'admin',
+              hours: [
+                2, 4, 5, 0, 1, 22, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+              ],
+            },
+          ],
         },
       },
     },
@@ -119,8 +118,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
     const proj = this.selectedProject;
     if (proj && !proj.years[year]) proj.years[year] = {};
 
-    if (proj && !proj.years[year][month])
-      proj.years[year][month] = { employees: [] };
+    if (proj && !proj.years[year][month]) proj.years[year][month] = [];
   }
 
   get selectedProject(): Project | undefined {
@@ -131,8 +129,8 @@ export class TimesheetEntryContainerComponent implements OnInit {
     if (!this.selectedProject) return [];
 
     return (
-      this.selectedProject.years[this.selected.year]?.[this.selected.month]
-        ?.employees || []
+      this.selectedProject.years[this.selected.year]?.[this.selected.month] ||
+      []
     );
   }
 

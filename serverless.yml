@@ -5,6 +5,7 @@ service: senior-project
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-tscpaths
   - serverless-offline
   - serverless-s3-sync
 
@@ -16,6 +17,10 @@ package:
     - frontend/dist/frontend/browser/**
 
 custom:
+  tscpaths:
+    tsconfigPath: ./backend/tsconfig.json
+  serverlessPluginTypescript:
+    tsConfigFileLocation: ./backend/tsconfig.json
   params:
     usersTableName: 'users-table-${sls:stage}'
     projectsTableName: 'projects-table-${sls:stage}'

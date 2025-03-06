@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@senior-project/frontend",
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
