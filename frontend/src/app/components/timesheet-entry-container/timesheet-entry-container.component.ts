@@ -54,7 +54,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
   users: User[] = [];
   selected: Selected = null!;
   isLoading = true;
-  isEditing = true;
+  isEditing = false;
 
   constructor(
     private userService: UserApiService,
