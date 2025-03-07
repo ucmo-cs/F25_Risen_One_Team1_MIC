@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -10,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string): Observable<unknown> {
+  login(username: string, password: string) {
     return this.http.post(environment.apiGatewayUrl + '/login', {
       username,
       password,
