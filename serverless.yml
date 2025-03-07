@@ -4,7 +4,6 @@ app: senior-project
 service: senior-project
 
 plugins:
-  - serverless-esbuild
   - serverless-offline
   - serverless-s3-sync
 
@@ -17,7 +16,7 @@ package:
 
 custom:
   esbuild:
-    keepOutputDirectory: true
+    # keepOutputDirectory: true
     format: 'esm'
     exclude:
       - '@aws-sdk'

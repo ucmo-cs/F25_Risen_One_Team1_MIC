@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { UserApiService } from '../../services/user.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { type Project } from '@shared/types';
+import type { Project } from '@shared/types';
 
 interface EmployeeRow {
   username: string;
