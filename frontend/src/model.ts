@@ -1,40 +1,15 @@
-export interface Employee {
-  name: string,
-}
-
-export interface Project {
-  name: string,
-  id: number,
+export interface User {
+  username: string;
 }
 
 export interface Selected {
-  project: Project,
-  month: Month,
-  year: number,
-  dayCount: number,
-  dayColumns: Array<any>
+  projectId: number;
+  year: number;
+  month: number;
+  dayColumns: number[];
 }
 
 export interface Signature {
-  name: string,
-  date: string,
+  name: string;
+  date: string;
 }
-
-export interface EmployeeTimesheet {
-  employee: Employee,
-  entries: Array<number>,
-}
-
-export type Month =
-  | 'January'
-  | 'February'
-  | 'March'
-  | 'April'
-  | 'May'
-  | 'June'
-  | 'July'
-  | 'August'
-  | 'September'
-  | 'October'
-  | 'November'
-  | 'December';

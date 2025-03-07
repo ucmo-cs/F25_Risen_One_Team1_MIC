@@ -1,7 +1,12 @@
 {
-  "name": "backend",
+  "name": "@senior-project/backend",
   "version": "0.0.1",
+  "type": "module",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.744.0"
+    "@aws-sdk/client-dynamodb": "^3.744.0",
+    "@aws-sdk/lib-dynamodb": "^3.758.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147"
   }
 }

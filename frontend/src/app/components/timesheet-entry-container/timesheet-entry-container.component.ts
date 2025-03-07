@@ -2,8 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { Employee, EmployeeTimesheet, Month, Project, Selected } from '../../../model';
+import { Selected, User } from '../../../model';
 import { CommonModule } from '@angular/common';
+import { UserApiService } from '../../services/user.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import type { Project } from '@shared/types';
+
+interface EmployeeRow {
+  username: string;
+  hours: number[];
+}
 
 @Component({
   selector: 'app-timesheet-entry-container',
@@ -14,94 +23,199 @@ import { CommonModule } from '@angular/common';
     MatSelect,
     MatOption,
     MatButton,
+    MatProgressSpinner,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './timesheet-entry-container.component.html',
-  styleUrl: './timesheet-entry-container.component.css'
+  styleUrl: './timesheet-entry-container.component.css',
 })
-
 export class TimesheetEntryContainerComponent implements OnInit {
-  months: Month[] = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+  MONTHS = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  projects: Array<Project> = [
-    { name: "TestProject1", id: 0 },
-    { name: "TestProject2", id: 1, },
-    { name: "TestProject3", id: 2 },
+  projects: Project[] = [
+    {
+      id: 0,
+      name: 'TestProject1',
+      years: {
+        2025: {
+          2: [
+            {
+              username: 'admin',
+              hours: [
+                2, 4, 5, 0, 1, 22, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+              ],
+            },
+          ],
+        },
+      },
+    },
+    { id: 1, name: 'TestProject2', years: {} },
+    { id: 2, name: 'TestProject3', years: {} },
   ];
 
-  selected: Selected = {
-    project: this.projects[0],
-    month: this.months[new Date().getMonth()],
-    year: new Date().getFullYear(),
-    dayCount: 0,
-    dayColumns: [],
-  }
+  currentYear = new Date().getFullYear();
+  users: User[] = [];
+  selected: Selected = null!;
+  isLoading = true;
+  isEditing = true;
+
+  constructor(private userService: UserApiService) {}
 
   ngOnInit() {
-    this.changeTimesheetMonth(this.months[new Date().getMonth()])
-    this.changeTimesheetYear(new Date().getFullYear())
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
+
+    this.changeTimesheet(0, year, month);
+
+    this.userService.getUsers().subscribe((res) => {
+      this.users = res;
+      this.isLoading = false;
+    });
   }
 
-  data: Array<EmployeeTimesheet> = [
-    {
-      employee: { name: "TestEmployee1" },
-      entries: [4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    },
-    {
-      employee: { name: "TestEmployee2" },
-      entries: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    },
-    {
-      employee: { name: "TestEmployee3" },
-      entries: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    },
-  ]
-
-  calculateEmployeeTotalColumn(row: EmployeeTimesheet): number {
-    const clippedEntries = row.entries.slice(0, this.selected.dayCount)
-    return clippedEntries.reduce((total, cell) => total + cell);
+  calculateEmployeeTotalColumn(hours: number[]): number {
+    return hours.reduce((acc, v) => {
+      if (v < 0) return acc;
+      acc += v;
+      return acc;
+    }, 0);
   }
 
   calculateGrandTotalColumn() {
-    let grandTotal = 0;
-    this.data.forEach(timesheet => grandTotal += this.calculateEmployeeTotalColumn(timesheet));
-    return grandTotal;
+    return this.employees.reduce(
+      (acc, v) => (acc += this.calculateEmployeeTotalColumn(v.hours)),
+      0
+    );
   }
 
-  changeTimesheetMonth(month: Month) {
-    const newDayCount = new Date(this.selected.year, this.months.indexOf(this.selected.month)+1, 0).getDate();
+  changeTimesheet(projectId: number, year: number, month: number) {
+    const newDayCount = new Date(year, month + 1, 0).getDate();
     const newDayColumns = Array.from({ length: newDayCount }, (_, i) => i + 1);
 
-    this.selected = { 
-      ...this.selected, 
-      month: month, 
-      dayCount: newDayCount,
+    this.selected = {
+      projectId,
+      year,
+      month,
       dayColumns: newDayColumns,
+    };
+
+    const proj = this.selectedProject;
+    if (proj && !proj.years[year]) proj.years[year] = {};
+
+    if (proj && !proj.years[year][month]) proj.years[year][month] = [];
+  }
+
+  get selectedProject(): Project | undefined {
+    return this.projects.find((p) => p.id === this.selected.projectId);
+  }
+
+  get employees(): EmployeeRow[] {
+    if (!this.selectedProject) return [];
+
+    return (
+      this.selectedProject.years[this.selected.year]?.[this.selected.month] ||
+      []
+    );
+  }
+
+  employeeHours(username: string): number[] {
+    return (
+      this.employees.find((e) => e.username === username)?.hours ||
+      Array.from({ length: this.selected.dayColumns.length }, () => -1)
+    );
+  }
+
+  trackByUsername(index: number, user: User): string {
+    return user.username;
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  updateHours(username: string, dayIndex: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const hours = this.employeeHours(username);
+
+    let newValue = Number(input.value || '?');
+    if (isNaN(newValue) || newValue < 0) newValue = -1;
+
+    input.value = newValue < 0 ? '' : String(newValue);
+
+    hours[dayIndex] = newValue;
+
+    if (!this.employees.some((e) => e.username === username))
+      this.employees.push({ username, hours });
+  }
+
+  onKeyDown(event: KeyboardEvent, rowIndex: number, colIndex: number) {
+    if (event.shiftKey) return;
+
+    const input = event.target as HTMLInputElement;
+    const cursorAtLeft = input.selectionStart === 0;
+    const cursorAtRight = input.selectionEnd === input.value.length;
+
+    let nextInput: HTMLElement | null = null;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        if (cursorAtLeft || cursorAtRight)
+          nextInput = this.getInputElement(rowIndex - 1, colIndex);
+        break;
+      case 'ArrowDown':
+        if (cursorAtLeft || cursorAtRight)
+          nextInput = this.getInputElement(rowIndex + 1, colIndex);
+        break;
+      case 'ArrowLeft':
+        if (cursorAtLeft)
+          nextInput = this.getInputElement(rowIndex, colIndex - 1);
+        break;
+      case 'ArrowRight':
+        if (cursorAtRight)
+          nextInput = this.getInputElement(rowIndex, colIndex + 1);
+        break;
+    }
+
+    if (nextInput) {
+      event.preventDefault();
+      nextInput.focus();
     }
   }
 
-  changeTimesheetYear(year: number) {
-    this.selected = {
-      ...this.selected,
-      year: year,
-    }
-    if (this.selected.month === "February") {
-      this.changeTimesheetMonth(this.selected.month) // update in case of leap year
-    }
+  getInputElement(rowIndex: number, colIndex: number): HTMLElement | null {
+    const table = document.querySelector('table tbody');
+    if (!table) return null;
+
+    const row = table.children[rowIndex] as HTMLElement;
+    const cell = row?.children[colIndex + 1] as HTMLElement;
+    return cell?.querySelector('input') || null;
   }
 
   exportToPDF() {
-    alert("TODO export to pdf")
+    alert('TODO export to pdf');
   }
 
   edit() {
-    alert("TODO edit")
-  }
+    this.isEditing = !this.isEditing;
 
-  save() {
-    alert("TODO save")
+    // Save
+    if (!this.isEditing) {
+    }
   }
 }

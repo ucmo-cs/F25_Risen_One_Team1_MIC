@@ -5,16 +5,23 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html,
 body {
   all: unset;
-    background-image: linear-gradient(
-      to right bottom,
-      hsla(48, 100%, 49%, 0.8),
-      hsla(34, 100%, 46%, 0.8)
-    );
+  background-image: linear-gradient(
+    to right bottom,
+    hsla(48, 100%, 49%, 0.8),
+    hsla(34, 100%, 46%, 0.8)
+  );
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  min-height: 100vh;
 }
 
 p {
@@ -44,7 +51,8 @@ p {
   line-height: 1.5;
 }
 
-.cal-days, .cal-cell-row {
+.cal-days,
+.cal-cell-row {
   border: none !important;
 }
 
@@ -82,7 +90,7 @@ p {
 }
 
 .mat-mdc-card-content.mat-mdc-card-content {
-  padding:0;
+  padding: 0;
 }
 
 tr.expanded {

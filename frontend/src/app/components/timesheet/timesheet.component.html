@@ -1,14 +1,16 @@
-<mat-card class="timesheet">
-  <mat-card-header class="timesheet-header">
-    <mat-card-title>Monthly Time Sheet</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <app-timesheet-entry-container />
-  </mat-card-content>
-  <mat-card-footer>
-    <div class="timesheet-footer">
-      <span>Manager Signature {{ signature.name }}</span>
-      <span>Date {{ signature.date }}</span>
-    </div>
-  </mat-card-footer>
-</mat-card>
+<div class="container">
+  <mat-card class="timesheet">
+    <mat-card-header class="timesheet-header">
+      <mat-card-title>Monthly Time Sheet</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-timesheet-entry-container />
+    </mat-card-content>
+    <mat-card-footer>
+      <div class="timesheet-footer">
+        <span>Manager Signature {{ signature.name }}</span>
+        <span>Date {{ signature.date }}</span>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>

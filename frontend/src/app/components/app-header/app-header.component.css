@@ -4,6 +4,7 @@
   align-items: center;
   color: #fff;
   background-color: black;
+  overflow: hidden;
 }
 
 .verticle-alignment-helper {
