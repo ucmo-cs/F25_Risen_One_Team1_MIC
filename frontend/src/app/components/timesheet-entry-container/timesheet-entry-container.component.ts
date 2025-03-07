@@ -8,6 +8,8 @@ import { UserApiService } from '../../services/user.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import type { Project } from '@shared/types';
+import { ProjectService } from '../../services/project.service';
+import { forkJoin } from 'rxjs';
 
 interface EmployeeRow {
   username: string;
@@ -47,35 +49,17 @@ export class TimesheetEntryContainerComponent implements OnInit {
     'December',
   ];
 
-  projects: Project[] = [
-    {
-      id: 0,
-      name: 'TestProject1',
-      years: {
-        2025: {
-          2: [
-            {
-              username: 'admin',
-              hours: [
-                2, 4, 5, 0, 1, 22, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-              ],
-            },
-          ],
-        },
-      },
-    },
-    { id: 1, name: 'TestProject2', years: {} },
-    { id: 2, name: 'TestProject3', years: {} },
-  ];
-
+  projects: Project[] = [];
   currentYear = new Date().getFullYear();
   users: User[] = [];
   selected: Selected = null!;
   isLoading = true;
   isEditing = true;
 
-  constructor(private userService: UserApiService) {}
+  constructor(
+    private userService: UserApiService,
+    private projectsService: ProjectService
+  ) {}
 
   ngOnInit() {
     const year = new Date().getFullYear();
@@ -83,8 +67,12 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
     this.changeTimesheet(0, year, month);
 
-    this.userService.getUsers().subscribe((res) => {
-      this.users = res;
+    forkJoin([
+      this.userService.getUsers(),
+      this.projectsService.getProjects(),
+    ]).subscribe((r) => {
+      this.users = r[0] as unknown as User[];
+      this.projects = r[1 as 0] as unknown as Project[];
       this.isLoading = false;
     });
   }
@@ -216,6 +204,16 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
     // Save
     if (!this.isEditing) {
+      this.isLoading = true;
+      this.projectsService.updateProjects(this.projects).subscribe({
+        next: () => {
+          this.isLoading = false;
+        },
+        error: (e) => {
+          console.error(e);
+          this.isLoading = false;
+        },
+      });
     }
   }
 }

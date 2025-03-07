@@ -12,7 +12,7 @@ export type Timesheet = z.infer<typeof timesheetSchema>;
 export const projectsSchema = z.object({
   id: z.number(),
   name: z.string(),
-  years: z.record(z.number(), z.record(z.number(), timesheetSchema))
+  years: z.record(z.string(), z.record(z.string(), timesheetSchema))
 });
 
 export type Project = z.infer<typeof projectsSchema>;

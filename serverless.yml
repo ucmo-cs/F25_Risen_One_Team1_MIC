@@ -16,7 +16,6 @@ package:
 
 custom:
   esbuild:
-    keepOutputDirectory: true
     format: 'esm'
     exclude:
       - '@aws-sdk'
@@ -98,7 +97,7 @@ functions:
     handler: backend/src/handlers/projects/update.handler
     events:
       - http:
-          path: project/update
+          path: projects/update
           method: post
           cors: true
 

@@ -10,7 +10,7 @@ export class ProjectService {
   constructor(private http: HttpClient) {}
 
   public getProjects() {
-    return this.http.get(environment.apiGatewayUrl + '/projects');
+    return this.http.get<Project[]>(environment.apiGatewayUrl + '/projects');
   }
 
   public updateProjects(projects: Project[]) {
