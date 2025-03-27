@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import type { Project } from '@shared/types';
 import { ProjectService } from '../../services/project.service';
 import { forkJoin } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 interface EmployeeRow {
   username: string;
@@ -58,14 +59,27 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
   constructor(
     private userService: UserApiService,
-    private projectsService: ProjectService
+    private projectsService: ProjectService,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth();
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      const projectId = +params['projectId'];
+      const year = +params['year'];
+      const month = +params['month'];
 
-    this.changeTimesheet(0, year, month);
+      // If these are present & valid, call changeTimesheet
+      if (!isNaN(projectId) && !isNaN(year) && !isNaN(month)) {
+        // Do NOT call this.changeTimesheet(0, year, month) from anywhere else
+        // if you want to rely on the user’s param.
+        this.changeTimesheet(projectId, year, month);
+      } else {
+        const year = new Date().getFullYear();
+        const month = new Date().getMonth();
+        this.changeTimesheet(0, year, month);
+      }
+    });
 
     forkJoin([
       this.userService.getUsers(),
