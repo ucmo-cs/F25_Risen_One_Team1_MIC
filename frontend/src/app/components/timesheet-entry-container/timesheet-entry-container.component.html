@@ -55,7 +55,7 @@
         class="inverted-btn"
         mat-stroked-button
         (click)="exportToPDF()"
-        [disabled]="isLoading"
+        [disabled]="isLoading || isExportingPDF"
       >
         Export to PDF
       </button>
@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <div class="timesheet-table" [class.editing]="isEditing">
+  <div class="timesheet-table" [class.editing]="isEditing" #pdfContent>
     <mat-spinner class="loader" *ngIf="isLoading" diameter="32"></mat-spinner>
 
     <table *ngIf="!isLoading">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -55,7 +55,9 @@ export class TimesheetEntryContainerComponent implements OnInit {
   users: User[] = [];
   selected: Selected = null!;
   isLoading = true;
+  isExportingPDF = false;
   isEditing = false;
+  @ViewChild('pdfContent') pdfContent!: ElementRef;
 
   constructor(
     private userService: UserApiService,
@@ -209,8 +211,30 @@ export class TimesheetEntryContainerComponent implements OnInit {
     return cell?.querySelector('input') || null;
   }
 
-  exportToPDF() {
-    alert('TODO export to pdf');
+  async exportToPDF() {
+    const content: Element = this.pdfContent.nativeElement;
+
+    this.isExportingPDF = true;
+    const { default: html2pdf } = await import('html2pdf.js');
+
+    const options = {
+      margin: 10,
+      filename: `ROC-${this.selectedProject!.name}-${this.selected.month}-${
+        this.selected.year
+      }.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+    };
+
+    content.classList.add('pdf-mode');
+
+    try {
+      await html2pdf().set(options).from(content).save();
+    } finally {
+      content.classList.remove('pdf-mode');
+      this.isExportingPDF = false;
+    }
   }
 
   edit() {

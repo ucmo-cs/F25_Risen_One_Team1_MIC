@@ -115,3 +115,8 @@
 .timesheet-table tfoot tr td {
   padding: 10px;
 }
+
+.timesheet-table.pdf-mode {
+  transform: scale(0.7);
+  transform-origin: top left;
+}
