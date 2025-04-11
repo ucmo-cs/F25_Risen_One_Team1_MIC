@@ -159,6 +159,7 @@ export class TimesheetEntryContainerComponent implements OnInit {
 
     let newValue = Number(input.value || '?');
     if (isNaN(newValue) || newValue < 0) newValue = -1;
+    if (newValue > 8) newValue = 8;
 
     input.value = newValue < 0 ? '' : String(newValue);
 

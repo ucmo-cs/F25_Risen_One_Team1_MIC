@@ -97,15 +97,16 @@
               "
             >
               <td>
-                <span *ngIf="!isEditing">{{ hour < 0 ? "" : hour }}</span>
+                <span *ngIf="!isEditing">{{ hour < 0 ? "0" : hour }}</span>
 
                 <input
                   *ngIf="isEditing"
                   type="text"
-                  [value]="hour < 0 ? '' : hour"
+                  [value]="hour < 0 ? '0' : hour"
                   (blur)="updateHours(employee.username, i, $event)"
                   (keydown)="onKeyDown($event, rowIndex, i)"
                   min="0"
+                  max="8"
                   maxlength="5"
                 />
               </td>
