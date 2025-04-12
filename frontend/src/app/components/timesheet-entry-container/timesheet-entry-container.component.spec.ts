@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimesheetEntryContainerComponent } from './timesheet-entry-container.component';
+import { AppModule } from '../../app.module';
 
 describe('TimesheetEntryContainerComponent', () => {
   let component: TimesheetEntryContainerComponent;
@@ -8,9 +9,8 @@ describe('TimesheetEntryContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TimesheetEntryContainerComponent]
-    })
-    .compileComponents();
+      imports: [AppModule, TimesheetEntryContainerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TimesheetEntryContainerComponent);
     component = fixture.componentInstance;
